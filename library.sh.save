@@ -1,0 +1,91 @@
+#!/bin/bash
+
+#funktio yksi
+#koneiden lisäys /etc/hosts
+
+fun01()
+{
+	echo "Checking hosts file"
+	cat /etc/hosts
+	read -p "Do you want to make changes to hosts file? yes/no: " vas1
+	case $vas1 in
+
+	"yes") 	read -p "Give me your ip-address: " osoite1
+		read -p "Give me your hostname: " hosti1
+			sudo sed -i '2 i\$osoite1 $hosti1' /etc/hosts
+
+		;;
+	*)	echo "Returning to menu."
+		;;
+
+	esac
+}
+
+#funktio kaksi
+#Puppetmasterin asennus
+
+fun02()
+{
+sudo apt-get update
+sudo apt-get install puppetmaster
+}
+
+#funktio kolme
+#Asennuksen tarkistus
+
+fun03()
+{
+sudo apt-get update
+sudo puppet resource package puppetmaster ensure=latest
+}
+
+#funktio neljä
+#backuppien otto
+
+fun04()
+{
+sudo cp /etc/puppet/puppet.conf $HOME/puppetbkup
+sudo cp /etc/hosts $HOME/hostsbkup
+sudo cp /etc/ntp.conf $HOME/ntpbackup
+}
+
+#funktio viisi
+#Staattisen IP osoitteen laitto
+
+
+
+fun05()
+{
+echo "Checking your IP configuration"
+ifconfig
+read -p "Do you want to change your IP configuration? yes/no: " vas2
+	case $vas2 in
+
+		"yes")	read -p "Give me your IP-address: " iposoite
+			read -p "Give me your netmask: " maski
+			read -p "Give me your gateway: " gate
+			read -p "Give me dns-server: " deens
+
+			sudo sed -i '10 c/iface eth0 inet static' /etc/network/interfaces
+			sudo sed -i '12 c/address ${iposoite}' /etc/network/interfaces
+			sudo sed -i '13 c/netmask ${maski}' /etc/network/interfaces
+			sudo sed -i '14 c/gateway ${gate}' /etc/network/interfaces
+			sudo sed -i '15 c/dns-nameservers ${deens}' /etc/network/interfaces
+
+			;;
+
+		*)	echo "Returning to menu."
+			;;
+	esac
+}
+
+#funktio kuusi
+#Konfiguraatioiden muokkaus
+
+
+#funktio 7
+#NTP Installation
+
+
+#funktio 8
+#NTP konffi
